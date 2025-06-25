@@ -9,8 +9,10 @@ export default function Home() {
 
   const [weatherData, setWeatherData] = useState(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSearch = async (city: string) => {
+    setLoading(true);
     try {
       const res = await fetch(`/api/weather?city=${city}`);
       const data = await res.json();
@@ -27,6 +29,7 @@ export default function Home() {
       setWeatherData(null);
       setError("Network error. Please try again later.");
     }
+    setLoading(false);
   };
 
 
@@ -41,6 +44,13 @@ export default function Home() {
       {/* Centered container for SearchBar and Forecastcard */}
       <div className="z-10 flex flex-col items-center gap-6">
         <SearchBar onSearch={handleSearch} />
+
+        {loading && (
+          <div className="mt-4 flex justify-center">
+            <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
+
 
         {error && (
           <div className="relative w-full max-w-md px-4 py-3 rounded-lg bg-red-100 border border-red-400 text-red-700 flex items-start gap-3 shadow-md animate-fade-in">
